@@ -3,9 +3,18 @@
 import { useUsername } from "@/hooks/use-username";
 import { client } from "@/lib/client";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 
-export default function Home() {
+export function Page() {
+  return (
+    <Suspense>
+      <Home />
+    </Suspense>
+  );
+}
+
+function Home() {
   const list = ["create", "join", "setting", "profile"];
   const router = useRouter();
 
@@ -23,6 +32,9 @@ export default function Home() {
     },
   });
 
+  const searchParams = useSearchParams();
+  const wasDestroyed = searchParams.get("destroyed") === "true";
+  const error = searchParams.get("error");
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-[#161515]">
       <nav className="top-0 left-0 fixed p-1 border border-zinc-800 bg-zinc-900 min-w-full">
@@ -36,6 +48,35 @@ export default function Home() {
           ))}
         </li>
       </nav>
+
+      <div className="mb-10">
+        {wasDestroyed && (
+          <div className="bg-red-900/50 border border-red-900 p-4 text-center">
+            <p className="text-red-500 text-sm font-bold">ROOM DESTROYED</p>
+            <p className="text-zinc-500 text-xs mt-1">
+              All messages were permanently deleted.
+            </p>
+          </div>
+        )}
+
+        {error === "room-not-found" && (
+          <div className="bg-red-900/50 border border-red-900 p-4 text-center">
+            <p className="text-red-500 text-sm font-bold">ROOM NOT FOUND</p>
+            <p className="text-zinc-500 text-xs mt-1">
+              This room may have expired or never existed.
+            </p>
+          </div>
+        )}
+
+        {error === "roomfull" && (
+          <div className="bg-red-900/50 border border-red-900 p-4 text-center">
+            <p className="text-red-500 text-sm font-bold">ROOM FULL</p>
+            <p className="text-zinc-500 text-xs mt-1">
+              This room is at maximum capacity.
+            </p>
+          </div>
+        )}
+      </div>
 
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-2 cursor-none">

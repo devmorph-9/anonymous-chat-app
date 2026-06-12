@@ -25,7 +25,7 @@ export const realtime = new Realtime({
   redis,
 });
 
-// realtime.emit("chat.message", { roomdId });
+// realtime.emit("chat.message", { roomId });
 
 export type RealtimeEvents = InferRealtimeEvents<typeof realtime>;
 
