@@ -57,6 +57,7 @@ export const proxy = async (req: NextRequest) => {
   // check it user is allowed to jion
   // if they are let them pass
   // if they are not send them back to lobby
+  // done
 };
 
 export const config = {
